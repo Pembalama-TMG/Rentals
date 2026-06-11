@@ -74,17 +74,17 @@ export const DEFAULT_IMAGES = {
   heroScooter: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=80',
   landingRent: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
   landingPartner: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80',
-  kathmandu: 'https://images.unsplash.com/photo-1597139471983-db8bf2a4dc2f?w=800&q=80',
-  pokhara: 'https://images.unsplash.com/photo-1537225228614-b4fad34a2b08?w=800&q=80',
+  kathmandu: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80',
+  pokhara: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
   chitwan: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800&q=80',
-  lumbini: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
-  butwal: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800&q=80',
+  lumbini: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80',
+  butwal: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80',
   
   // Feature images
-  affordablePricing: 'https://images.unsplash.com/photo-1579621970563-fbf519cecc94?w=600&q=80',
-  securePayment: 'https://images.unsplash.com/photo-1569163139394-de4798aa62b3?w=600&q=80',
+  affordablePricing: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=600&q=80',
+  securePayment: 'https://images.unsplash.com/photo-1533767299635-6be5b932ae6f?w=600&q=80',
   verifiedOwners: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80',
-  easyBooking: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=600&q=80',
+  easyBooking: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80',
 };
 
 // Helper function to generate ImageKit URL with transformations

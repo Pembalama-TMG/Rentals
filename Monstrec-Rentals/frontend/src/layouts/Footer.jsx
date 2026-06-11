@@ -63,15 +63,15 @@ export default function Footer() {
             <div className="space-y-3 text-gray-300">
               <div className="flex items-center gap-2">
                 <FaPhone className="text-primary" />
-                <span>+977-1-4123456</span>
+                <span>+977-9823423121</span>
               </div>
               <div className="flex items-center gap-2">
                 <FaEnvelope className="text-primary" />
-                <span>info@monstrec.com</span>
+                <span>monstrec-rental@gmail.com</span>
               </div>
               <div className="flex items-center gap-2">
                 <FaMapMarkerAlt className="text-primary" />
-                <span>Thamel, Kathmandu, Nepal</span>
+                <span>Boudha, Kathmandu, Nepal</span>
               </div>
             </div>
           </motion.div>

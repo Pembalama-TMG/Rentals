@@ -1,8 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { FaCheckCircle, FaRupeeSign } from 'react-icons/fa';
 
 export default function Pricing() {
+  const navigate = useNavigate();
+
   const pricingPlans = [
     {
       type: 'Scooter',
@@ -19,6 +22,10 @@ export default function Pricing() {
       features: ['Per KM Rental', 'Full Day Rental', 'Fuel Included', 'Insurance Covered', '24/7 Support'],
     },
   ];
+
+  const handleBookNow = () => {
+    navigate('/vehicles');
+  };
 
   return (
     <div className="min-h-screen bg-light py-16">
@@ -69,7 +76,9 @@ export default function Pricing() {
                 ))}
               </ul>
 
-              <button className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-accent transition">
+              <button 
+                onClick={handleBookNow}
+                className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-accent transition">
                 Book Now
               </button>
             </motion.div>

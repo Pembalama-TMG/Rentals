@@ -12,10 +12,23 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: #FFFBF0;
+}
+
+html.dark {
+  background-color: #111827;
 }
 
 body {
   font-family: 'Inter', sans-serif;
+  background-color: #FFFBF0;
+  color: #000000;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.dark body {
+  background-color: #111827;
+  color: #F3F4F6;
 }
 
 ::-webkit-scrollbar {
@@ -24,6 +37,10 @@ body {
 
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: #1f2937;
 }
 
 ::-webkit-scrollbar-thumb {
