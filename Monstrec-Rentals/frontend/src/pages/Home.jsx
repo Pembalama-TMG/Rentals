@@ -1,12 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FaCheckCircle, FaUsers, FaMotorcycle, FaLock, FaMapMarkerAlt, FaStar, FaArrowRight } from 'react-icons/fa';
-import { MapPin, TrendingUp, Award, Shield } from 'lucide-react';
+import { FaStar } from 'react-icons/fa';
 import VehicleCard from '../components/VehicleCard.jsx';
+import OptimizedImage from '../components/OptimizedImage.jsx';
 import useVehicles from '../hooks/useVehicles.js';
 import LoadingSkeleton from '../components/LoadingSkeleton.jsx';
 import NepalMap from '../components/NepalMap.jsx';
+import { DEFAULT_IMAGES } from '../config/imagekit.js';
 
 export default function Home() {
   const { vehicles, loading } = useVehicles();
@@ -40,13 +41,14 @@ export default function Home() {
         {/* Background parallax layers */}
         <motion.div
           style={{ y: yOffset }}
-          className="absolute inset-0 opacity-30"
+          className="absolute inset-0 opacity-40"
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50" />
-          <img
-            src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80"
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/60" />
+          <OptimizedImage
+            src={DEFAULT_IMAGES.heroScooter}
             alt="Hero Background"
-            className="w-full h-full object-cover"
+            className="w-full h-full"
+            objectFit="cover"
           />
         </motion.div>
 
@@ -128,28 +130,58 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { icon: <TrendingUp className="w-10 h-10" />, title: 'Affordable Pricing', desc: 'Best rates for scooters & bikes in Nepal' },
-              { icon: <Award className="w-10 h-10" />, title: 'Easy Booking', desc: 'Book in just 5 minutes, no hassle' },
-              { icon: <Shield className="w-10 h-10" />, title: 'Secure Payments', desc: 'Safe online transactions with encryption' },
-              { icon: <FaUsers size={40} />, title: 'Verified Owners', desc: '100% authentic & well-maintained vehicles' },
+              { 
+                image: DEFAULT_IMAGES.affordablePricing, 
+                title: 'Affordable Pricing', 
+                desc: 'Best rates for scooters & bikes in Nepal' 
+              },
+              { 
+                image: DEFAULT_IMAGES.easyBooking, 
+                title: 'Easy Booking', 
+                desc: 'Book in just 5 minutes, no hassle' 
+              },
+              { 
+                image: DEFAULT_IMAGES.securePayment, 
+                title: 'Secure Payments', 
+                desc: 'Safe online transactions with encryption' 
+              },
+              { 
+                image: DEFAULT_IMAGES.verifiedOwners, 
+                title: 'Verified Owners', 
+                desc: '100% authentic & well-maintained vehicles' 
+              },
             ].map((feature, i) => (
               <motion.div
                 key={i}
-                whileHover={{ y: -15 }}
+                whileHover={{ y: -15, scale: 1.05 }}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className="group bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                className="group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
               >
-                <div className="text-primary group-hover:scale-110 transition-transform mb-4 flex justify-center">
-                  {feature.icon}
+                <div className="relative h-64 bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                  {/* Feature Image */}
+                  <OptimizedImage
+                    src={feature.image}
+                    alt={feature.title}
+                    className="h-full w-full"
+                    objectFit="cover"
+                    animate={true}
+                  />
+                  
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent group-hover:from-gray-900/80 transition-all duration-300" />
+
+                  {/* Content */}
+                  <div className="absolute inset-0 flex flex-col justify-end p-6">
+                    <h3 className="text-xl font-bold text-white mb-2">
+                      {feature.title}
+                    </h3>
+                    <p className="text-white/90 text-sm">
+                      {feature.desc}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 text-center">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 text-center">
-                  {feature.desc}
-                </p>
               </motion.div>
             ))}
           </div>

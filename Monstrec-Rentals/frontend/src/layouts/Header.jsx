@@ -40,6 +40,9 @@ export default function Header() {
           <Link to="/vehicles" className="hover:text-primary transition">
             Browse Vehicles
           </Link>
+          <Link to="/gallery" className="hover:text-primary transition">
+            Gallery
+          </Link>
           <Link to="/pricing" className="hover:text-primary transition">
             Pricing
           </Link>
@@ -142,6 +145,9 @@ export default function Header() {
           </Link>
           <Link to="/vehicles" onClick={() => setMenuOpen(false)}>
             Browse Vehicles
+          </Link>
+          <Link to="/gallery" onClick={() => setMenuOpen(false)}>
+            Gallery
           </Link>
           <Link to="/pricing" onClick={() => setMenuOpen(false)}>
             Pricing

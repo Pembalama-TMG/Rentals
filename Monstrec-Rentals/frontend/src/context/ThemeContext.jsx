@@ -35,11 +35,6 @@ export const ThemeProvider = ({ children }) => {
     }
   };
 
-  // Prevent hydration mismatch
-  if (!mounted) {
-    return children;
-  }
-
   return (
     <ThemeContext.Provider value={{ isDark, toggleTheme }}>
       {children}

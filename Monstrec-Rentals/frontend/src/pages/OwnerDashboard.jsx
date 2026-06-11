@@ -12,15 +12,19 @@ import {
   CheckCircle,
   XCircle
 } from 'lucide-react';
+import OptimizedImage from '../components/OptimizedImage.jsx';
+import ImageUpload from '../components/ImageUpload.jsx';
 
 const OwnerDashboard = ({ tab = 'overview' }) => {
   const [activeTab, setActiveTab] = useState(tab);
+  const [vehicleImages, setVehicleImages] = useState({});
   const [vehicles, setVehicles] = useState([
     {
       id: 1,
       name: 'Honda Dio',
       type: 'Scooter',
       image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
+      images: [],
       status: 'Available',
       earnings: '₨5,400',
       bookings: 12,
@@ -110,6 +114,13 @@ const OwnerDashboard = ({ tab = 'overview' }) => {
     </div>
   );
 
+  const handleVehicleImagesChange = (vehicleId, images) => {
+    setVehicleImages(prev => ({
+      ...prev,
+      [vehicleId]: images
+    }));
+  };
+
   const renderVehicles = () => (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -124,51 +135,81 @@ const OwnerDashboard = ({ tab = 'overview' }) => {
         </motion.button>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="space-y-8">
         {vehicles.map((vehicle, index) => (
           <motion.div
             key={vehicle.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="bg-white dark:bg-gray-700 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+            className="bg-white dark:bg-gray-700 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow p-6"
           >
-            <img
-              src={vehicle.image}
-              alt={vehicle.name}
-              className="w-full h-40 object-cover hover:scale-110 transition-transform duration-300"
-            />
-            <div className="p-4">
-              <h4 className="text-lg font-bold text-gray-900 dark:text-white">{vehicle.name}</h4>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">{vehicle.type}</p>
-              
-              <div className="mt-4 space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400 text-sm">Status:</span>
-                  <span className="text-green-600 dark:text-green-400 font-semibold">{vehicle.status}</span>
+            {/* Vehicle Info */}
+            <div className="grid md:grid-cols-3 gap-6 mb-6">
+              {/* Main Image */}
+              <div className="md:col-span-1">
+                <div className="h-56 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-600 mb-4">
+                  <OptimizedImage
+                    src={vehicle.image}
+                    alt={vehicle.name}
+                    className="w-full h-full"
+                    objectFit="cover"
+                    animate={true}
+                  />
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400 text-sm">Earnings:</span>
-                  <span className="text-gray-900 dark:text-white font-semibold">{vehicle.earnings}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400 text-sm">Bookings:</span>
-                  <span className="text-gray-900 dark:text-white font-semibold">{vehicle.bookings}</span>
-                </div>
+                <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{vehicle.name}</h4>
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{vehicle.type}</p>
               </div>
 
-              <div className="mt-4 flex gap-2">
-                <button className="flex-1 flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-900 dark:text-white py-2 rounded-lg transition-colors">
-                  <Eye className="w-4 h-4" />
-                  View
-                </button>
-                <button className="flex-1 bg-primary hover:opacity-90 text-white py-2 rounded-lg transition-opacity">
-                  Edit
-                </button>
+              {/* Stats */}
+              <div className="md:col-span-2">
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-4 rounded-lg">
+                    <p className="text-gray-600 dark:text-gray-400 text-xs mb-1">Status</p>
+                    <p className="text-lg font-bold text-green-600 dark:text-green-400">{vehicle.status}</p>
+                  </div>
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-4 rounded-lg">
+                    <p className="text-gray-600 dark:text-gray-400 text-xs mb-1">Earnings</p>
+                    <p className="text-lg font-bold text-green-600 dark:text-green-400">{vehicle.earnings}</p>
+                  </div>
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-4 rounded-lg">
+                    <p className="text-gray-600 dark:text-gray-400 text-xs mb-1">Bookings</p>
+                    <p className="text-lg font-bold text-purple-600 dark:text-purple-400">{vehicle.bookings}</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <button className="flex-1 flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-900 dark:text-white py-2 rounded-lg transition-colors">
+                    <Eye className="w-4 h-4" />
+                    View
+                  </button>
+                  <button className="flex-1 bg-primary hover:opacity-90 text-white py-2 rounded-lg transition-opacity">
+                    Edit
+                  </button>
+                </div>
               </div>
+            </div>
+
+            {/* Image Upload */}
+            <div className="border-t border-gray-200 dark:border-gray-600 pt-6">
+              <ImageUpload
+                onImagesChange={(images) => handleVehicleImagesChange(vehicle.id, images)}
+                maxImages={10}
+                existingImages={vehicle.images || []}
+                onRemoveImage={(imageUrl) => {
+                  setVehicles(prev => prev.map(v => 
+                    v.id === vehicle.id 
+                      ? { ...v, images: v.images.filter(img => img !== imageUrl) }
+                      : v
+                  ));
+                }}
+              />
             </div>
           </motion.div>
         ))}
+      </div>
+    </div>
+  );
       </div>
     </div>
   );

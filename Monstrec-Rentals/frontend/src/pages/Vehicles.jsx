@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 import VehicleCard from '../components/VehicleCard.jsx';
 import useVehicles from '../hooks/useVehicles.js';
 import LoadingSkeleton from '../components/LoadingSkeleton.jsx';
-import { FaFilter, FaSearch, FaSliders } from 'react-icons/fa';
-import { MapPin, DollarSign, Zap } from 'lucide-react';
+import { FaSearch } from 'react-icons/fa';
+import { MapPin, DollarSign, Zap, Sliders } from 'lucide-react';
 
 export default function Vehicles() {
   const { vehicles, loading, fetchVehicles } = useVehicles();
@@ -69,7 +69,7 @@ export default function Vehicles() {
             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg sticky top-24 space-y-6">
               <div>
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-gray-900 dark:text-white">
-                  <FaFilter /> Filters
+                  <Sliders size={24} /> Filters
                   {activeFilterCount > 0 && (
                     <span className="ml-auto bg-primary text-white text-sm px-3 py-1 rounded-full">
                       {activeFilterCount}
@@ -169,7 +169,7 @@ export default function Vehicles() {
                 onClick={() => setShowAdvanced(!showAdvanced)}
                 className="w-full flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-semibold py-2 rounded-lg transition-colors"
               >
-                <FaSliders /> Advanced Filters
+                <Sliders size={18} /> Advanced Filters
               </motion.button>
 
               {showAdvanced && (

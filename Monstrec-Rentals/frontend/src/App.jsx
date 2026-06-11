@@ -9,6 +9,7 @@ import Footer from './layouts/Footer.jsx';
 // Pages
 import Home from './pages/Home.jsx';
 import Vehicles from './pages/Vehicles.jsx';
+import Gallery from './pages/Gallery.jsx';
 import VehicleDetail from './pages/VehicleDetail.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
@@ -36,6 +37,7 @@ export default function App() {
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/vehicles" element={<Vehicles />} />
+            <Route path="/gallery" element={<Gallery />} />
             <Route path="/vehicle/:id" element={<VehicleDetail />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/about" element={<About />} />
