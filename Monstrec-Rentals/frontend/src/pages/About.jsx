@@ -105,9 +105,9 @@ export default function About() {
           <h2 className="text-2xl font-bold mb-4">Get in Touch</h2>
           <p className="text-gray-600 mb-4">Have questions? We'd love to hear from you!</p>
           <div className="space-y-2">
-            <p><strong>Email:</strong> monstrec-rental@gmail.com</p>
-            <p><strong>Phone:</strong> +977 9823423121</p>
-            <p><strong>Address:</strong> Boudha, Kathmandu, Nepal</p>
+            <p><strong>Email:</strong> info@monstrec.com</p>
+            <p><strong>Phone:</strong> +977-1-4123456</p>
+            <p><strong>Address:</strong> Thamel, Kathmandu, Nepal</p>
           </div>
         </motion.div>
       </div>
