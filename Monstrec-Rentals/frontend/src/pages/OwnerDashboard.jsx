@@ -210,9 +210,6 @@ const OwnerDashboard = ({ tab = 'overview' }) => {
       </div>
     </div>
   );
-      </div>
-    </div>
-  );
 
   const renderBookings = () => (
     <div>
