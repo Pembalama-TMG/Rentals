@@ -2,11 +2,11 @@
 // Update these values with your ImageKit credentials from https://imagekit.io/dashboard
 
 export const IMAGEKIT_CONFIG = {
-  urlEndpoint: process.env.REACT_APP_IMAGEKIT_URL_ENDPOINT || 'https://ik.imagekit.io/monstrec/',
-  publicKey: process.env.REACT_APP_IMAGEKIT_PUBLIC_KEY || 'public_key_here',
+  urlEndpoint: import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT || 'https://ik.imagekit.io/monstrec/',
+  publicKey: import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY || 'public_key_here',
   authenticator: async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/imagekit-auth`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/imagekit-auth`);
       if (!response.ok) {
         throw new Error('Authentication failed');
       }

@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FaStar } from 'react-icons/fa';
+import { FaStar, FaArrowRight } from 'react-icons/fa';
+import { MapPin } from 'lucide-react';
 import VehicleCard from '../components/VehicleCard.jsx';
 import OptimizedImage from '../components/OptimizedImage.jsx';
 import useVehicles from '../hooks/useVehicles.js';
