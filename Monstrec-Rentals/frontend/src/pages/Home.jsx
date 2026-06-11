@@ -1,102 +1,341 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FaCheckCircle, FaUsers, FaMotorcycle, FaLock } from 'react-icons/fa';
+import { FaCheckCircle, FaUsers, FaMotorcycle, FaLock, FaMapMarkerAlt, FaStar, FaArrowRight } from 'react-icons/fa';
+import { MapPin, TrendingUp, Award, Shield } from 'lucide-react';
 import VehicleCard from '../components/VehicleCard.jsx';
 import useVehicles from '../hooks/useVehicles.js';
 import LoadingSkeleton from '../components/LoadingSkeleton.jsx';
+import NepalMap from '../components/NepalMap.jsx';
 
 export default function Home() {
   const { vehicles, loading } = useVehicles();
   const popularVehicles = vehicles.slice(0, 6);
+  const heroRef = useRef(null);
+  const { scrollY } = useScroll();
+  const yOffset = useTransform(scrollY, [0, 500], [0, 150]);
+
+  const destinations = [
+    { name: 'Kathmandu', image: 'https://images.unsplash.com/photo-1597139471983-db8bf2a4dc2f?w=500', cost: '₨500/day', routes: '15 Popular Routes' },
+    { name: 'Pokhara', image: 'https://images.unsplash.com/photo-1537225228614-b4fad34a2b08?w=500', cost: '₨400/day', routes: '12 Popular Routes' },
+    { name: 'Chitwan', image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=500', cost: '₨450/day', routes: '10 Popular Routes' },
+    { name: 'Lumbini', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500', cost: '₨350/day', routes: '8 Popular Routes' },
+    { name: 'Mustang', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500', cost: '₨600/day', routes: '6 Popular Routes' },
+    { name: 'Butwal', image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=500', cost: '₨380/day', routes: '9 Popular Routes' },
+  ];
+
+  const testimonials = [
+    { name: 'Raj Kumar', rating: 5, text: 'Great service! The bike was in excellent condition. Highly recommended!', image: '👨‍💼' },
+    { name: 'Priya Singh', rating: 5, text: 'Best rental experience in Nepal. Professional staff and easy booking.', image: '👩‍💼' },
+    { name: 'Amit Patel', rating: 4.5, text: 'Affordable prices and reliable vehicles. Will definitely use again.', image: '👨‍💼' },
+  ];
 
   return (
-    <div>
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-dark to-secondary text-white py-20">
-        <div className="container mx-auto px-4">
+    <div className="bg-white dark:bg-gray-900 transition-colors duration-300">
+      {/* Hero Section with Parallax */}
+      <section 
+        ref={heroRef}
+        className="relative h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-dark via-secondary to-primary dark:from-gray-800 dark:via-gray-900 dark:to-primary"
+      >
+        {/* Background parallax layers */}
+        <motion.div
+          style={{ y: yOffset }}
+          className="absolute inset-0 opacity-30"
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50" />
+          <img
+            src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80"
+            alt="Hero Background"
+            className="w-full h-full object-cover"
+          />
+        </motion.div>
+
+        {/* Content */}
+        <div className="relative z-10 container mx-auto px-4 text-white text-center">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
+            transition={{ duration: 1 }}
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-4">
-              Rent Scooters Across Nepal
-            </h1>
-            <p className="text-xl text-gray-300 mb-8">
-              Explore Kathmandu, Pokhara & Beyond with Our Reliable Fleet
-            </p>
-            <div className="flex gap-4 justify-center flex-wrap">
+            <motion.h1 
+              className="text-6xl md:text-7xl font-bold mb-6 leading-tight"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+            >
+              Explore Nepal
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
+                Your Way
+              </span>
+            </motion.h1>
+
+            <motion.p 
+              className="text-2xl text-gray-200 mb-10 max-w-2xl mx-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+            >
+              Rent premium scooters and bikes to explore Kathmandu, Pokhara, and beyond
+            </motion.p>
+
+            <motion.div 
+              className="flex gap-6 justify-center flex-wrap"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+            >
               <Link
                 to="/vehicles"
-                className="bg-primary px-8 py-3 rounded-lg font-bold hover:bg-accent transition text-white"
+                className="bg-gradient-to-r from-primary to-accent hover:shadow-2xl px-10 py-4 rounded-full font-bold text-white text-lg transition-all duration-300 flex items-center gap-2 group"
               >
                 Book Now
+                <FaArrowRight className="group-hover:translate-x-2 transition-transform" />
               </Link>
               <Link
                 to="/pricing"
-                className="border-2 border-primary px-8 py-3 rounded-lg font-bold hover:bg-primary transition"
+                className="border-2 border-white hover:bg-white hover:text-dark px-10 py-4 rounded-full font-bold text-white text-lg transition-all duration-300"
               >
                 View Pricing
               </Link>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+        >
+          <div className="text-white text-center">
+            <p className="text-sm mb-2">Scroll to explore</p>
+            <div className="text-2xl">↓</div>
+          </div>
+        </motion.div>
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-light">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12 text-dark">Why Choose Us?</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <section className="py-20 px-4 bg-white dark:bg-gray-900">
+        <div className="container mx-auto">
+          <motion.h2 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="text-5xl font-bold text-center mb-16 text-gray-900 dark:text-white"
+          >
+            Why Choose Monstrec?
+          </motion.h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { icon: <FaMotorcycle />, title: 'Affordable Pricing', desc: 'Best rates for scooters & bikes' },
-              { icon: <FaCheckCircle />, title: 'Easy Booking', desc: 'Book in just 5 minutes' },
-              { icon: <FaLock />, title: 'Secure Payments', desc: 'Safe online transactions' },
-              { icon: <FaUsers />, title: 'Verified Vehicles', desc: '100% authentic & maintained' },
+              { icon: <TrendingUp className="w-10 h-10" />, title: 'Affordable Pricing', desc: 'Best rates for scooters & bikes in Nepal' },
+              { icon: <Award className="w-10 h-10" />, title: 'Easy Booking', desc: 'Book in just 5 minutes, no hassle' },
+              { icon: <Shield className="w-10 h-10" />, title: 'Secure Payments', desc: 'Safe online transactions with encryption' },
+              { icon: <FaUsers size={40} />, title: 'Verified Owners', desc: '100% authentic & well-maintained vehicles' },
             ].map((feature, i) => (
               <motion.div
                 key={i}
-                whileHover={{ y: -10 }}
-                className="bg-white p-6 rounded-2xl shadow-lg text-center"
+                whileHover={{ y: -15 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="group bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300"
               >
-                <div className="text-4xl text-primary mb-4 flex justify-center">{feature.icon}</div>
-                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.desc}</p>
+                <div className="text-primary group-hover:scale-110 transition-transform mb-4 flex justify-center">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 text-center">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300 text-center">
+                  {feature.desc}
+                </p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Popular Vehicles */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12 text-dark">Popular Vehicles</h2>
+      {/* Popular Destinations */}
+      <section className="py-20 px-4 bg-gray-50 dark:bg-gray-800">
+        <div className="container mx-auto">
+          <motion.h2 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="text-5xl font-bold text-center mb-16 text-gray-900 dark:text-white"
+          >
+            Popular Destinations
+          </motion.h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {destinations.map((dest, i) => (
+              <motion.div
+                key={i}
+                whileHover={{ scale: 1.05 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer"
+              >
+                <div className="relative h-64 overflow-hidden">
+                  <img
+                    src={dest.image}
+                    alt={dest.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                  <h3 className="text-2xl font-bold mb-3">{dest.name}</h3>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="text-lg font-semibold">{dest.cost}</p>
+                      <p className="text-sm text-gray-200 flex items-center gap-1">
+                        <MapPin size={16} /> {dest.routes}
+                      </p>
+                    </div>
+                    <button className="bg-primary hover:bg-accent px-4 py-2 rounded-lg font-semibold transition-colors">
+                      Book
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Vehicles */}
+      <section className="py-20 px-4 bg-white dark:bg-gray-900">
+        <div className="container mx-auto">
+          <div className="flex justify-between items-center mb-16">
+            <motion.h2 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              className="text-5xl font-bold text-gray-900 dark:text-white"
+            >
+              Featured Vehicles
+            </motion.h2>
+            <Link
+              to="/vehicles"
+              className="text-primary hover:text-accent font-semibold flex items-center gap-2 transition-colors"
+            >
+              View All <FaArrowRight />
+            </Link>
+          </div>
+
           {loading ? (
-            <LoadingSkeleton count={6} />
+            <LoadingSkeleton count={3} />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {popularVehicles.map((vehicle) => (
-                <VehicleCard key={vehicle._id} vehicle={vehicle} />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {popularVehicles.map((vehicle, i) => (
+                <motion.div
+                  key={vehicle._id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <VehicleCard vehicle={vehicle} />
+                </motion.div>
               ))}
             </div>
           )}
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-gradient-to-r from-primary to-accent text-white py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-4">Ready to Explore Nepal?</h2>
-          <p className="text-lg mb-8">Start your journey with Monstrec Rentals today!</p>
-          <Link
-            to="/vehicles"
-            className="bg-white text-primary px-8 py-3 rounded-lg font-bold hover:bg-light transition"
+      {/* Nepal Map Section */}
+      <section className="py-20 px-4 bg-gray-50 dark:bg-gray-800">
+        <div className="container mx-auto">
+          <motion.h2 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="text-5xl font-bold text-center mb-16 text-gray-900 dark:text-white"
           >
-            Browse All Vehicles
-          </Link>
+            Our Coverage Areas
+          </motion.h2>
+          <NepalMap />
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 px-4 bg-white dark:bg-gray-900">
+        <div className="container mx-auto">
+          <motion.h2 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="text-5xl font-bold text-center mb-16 text-gray-900 dark:text-white"
+          >
+            What Our Customers Say
+          </motion.h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <div className="flex items-center mb-4">
+                  <div className="text-4xl mr-4">{testimonial.image}</div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 dark:text-white">{testimonial.name}</h4>
+                    <div className="flex text-amber-400">
+                      {[...Array(Math.floor(testimonial.rating))].map((_, j) => (
+                        <FaStar key={j} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <p className="text-gray-600 dark:text-gray-300 italic">"{testimonial.text}"</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="relative py-24 px-4 bg-gradient-to-r from-primary via-accent to-primary dark:from-gray-800 dark:via-primary dark:to-gray-800 text-white overflow-hidden">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+          className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-48 -mt-48"
+        />
+        <motion.div
+          animate={{ rotate: -360 }}
+          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+          className="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full -ml-48 -mb-48"
+        />
+
+        <div className="container mx-auto text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="text-5xl md:text-6xl font-bold mb-6">
+              Ready to Explore Nepal?
+            </h2>
+            <p className="text-xl text-white/90 mb-12 max-w-2xl mx-auto">
+              Join thousands of happy travelers who have experienced the beauty of Nepal with Monstrec Rentals
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <Link
+                to="/vehicles"
+                className="bg-white text-primary hover:bg-gray-100 px-10 py-4 rounded-full font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Start Your Journey
+              </Link>
+              <Link
+                to="/owner/register"
+                className="border-2 border-white hover:bg-white hover:text-primary px-10 py-4 rounded-full font-bold text-lg transition-all duration-300"
+              >
+                Become a Partner
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
     </div>

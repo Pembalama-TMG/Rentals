@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['customer', 'admin'],
+      enum: ['customer', 'owner', 'admin'],
       default: 'customer',
     },
     isVerified: {
@@ -68,6 +68,37 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
     documentVerification: {
+      type: Boolean,
+      default: false,
+    },
+    // Owner specific fields
+    bankName: {
+      type: String,
+      default: '',
+    },
+    accountNumber: {
+      type: String,
+      default: '',
+    },
+    accountHolderName: {
+      type: String,
+      default: '',
+    },
+    totalEarnings: {
+      type: Number,
+      default: 0,
+    },
+    rating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+    totalVehicles: {
+      type: Number,
+      default: 0,
+    },
+    ownerVerified: {
       type: Boolean,
       default: false,
     },

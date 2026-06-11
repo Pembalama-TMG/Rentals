@@ -17,15 +17,19 @@ import About from './pages/About.jsx';
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import LandingModal from './components/LandingModal.jsx';
 
 // Placeholder Pages
 import CustomerDashboard from './pages/CustomerDashboard.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
+import OwnerDashboard from './pages/OwnerDashboard.jsx';
+import OwnerRegister from './pages/OwnerRegister.jsx';
 
 export default function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
+        <LandingModal />
         <Header />
         <main className="flex-grow">
           <Routes>
@@ -37,6 +41,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/owner/register" element={<OwnerRegister />} />
 
             {/* Customer Routes */}
             <Route
@@ -60,6 +65,56 @@ export default function App() {
               element={
                 <ProtectedRoute requiredRole="customer">
                   <CustomerDashboard tab="profile" />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Owner Routes */}
+            <Route
+              path="/owner/dashboard"
+              element={
+                <ProtectedRoute requiredRole="owner">
+                  <OwnerDashboard tab="overview" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/owner/vehicles"
+              element={
+                <ProtectedRoute requiredRole="owner">
+                  <OwnerDashboard tab="vehicles" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/owner/bookings"
+              element={
+                <ProtectedRoute requiredRole="owner">
+                  <OwnerDashboard tab="bookings" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/owner/earnings"
+              element={
+                <ProtectedRoute requiredRole="owner">
+                  <OwnerDashboard tab="earnings" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/owner/reviews"
+              element={
+                <ProtectedRoute requiredRole="owner">
+                  <OwnerDashboard tab="reviews" />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/owner/settings"
+              element={
+                <ProtectedRoute requiredRole="owner">
+                  <OwnerDashboard tab="settings" />
                 </ProtectedRoute>
               }
             />

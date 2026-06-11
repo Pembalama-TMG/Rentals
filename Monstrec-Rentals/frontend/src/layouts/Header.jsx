@@ -2,11 +2,14 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaBars, FaTimes, FaSignOutAlt, FaUser } from 'react-icons/fa';
+import { Sun, Moon } from 'lucide-react';
 import useAuth from '../hooks/useAuth.js';
+import { useTheme } from '../context/ThemeContext.jsx';
 import { useState } from 'react';
 
 export default function Header() {
   const { user, isAuthenticated, logout, isAdmin } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -16,7 +19,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-dark text-white shadow-lg sticky top-0 z-50">
+    <header className="bg-dark dark:bg-gray-800 text-white shadow-lg sticky top-0 z-50 transition-colors duration-300">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 font-bold text-2xl">
@@ -47,6 +50,21 @@ export default function Header() {
 
         {/* Auth Buttons / User Menu */}
         <div className="flex items-center gap-4">
+          {/* Theme Toggle */}
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={toggleTheme}
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            title="Toggle theme"
+          >
+            {isDark ? (
+              <Sun className="w-5 h-5 text-yellow-400" />
+            ) : (
+              <Moon className="w-5 h-5 text-gray-300" />
+            )}
+          </motion.button>
+
           {isAuthenticated ? (
             <motion.div
               className="flex items-center gap-4"
@@ -116,7 +134,7 @@ export default function Header() {
           height: menuOpen ? 'auto' : 0,
           opacity: menuOpen ? 1 : 0,
         }}
-        className="md:hidden bg-secondary overflow-hidden"
+        className="md:hidden bg-secondary dark:bg-gray-700 overflow-hidden transition-colors duration-300"
       >
         <nav className="flex flex-col gap-4 p-4">
           <Link to="/" onClick={() => setMenuOpen(false)}>

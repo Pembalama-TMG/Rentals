@@ -1,4 +1,5 @@
 import User from '../models/User.js';
+import Owner from '../models/Owner.js';
 import { generateToken } from '../utils/jwt.js';
 import { sendEmail } from '../config/email.js';
 
@@ -149,6 +150,101 @@ export const changePassword = async (req, res, next) => {
     await user.save();
 
     res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Register as Owner
+export const registerOwner = async (req, res, next) => {
+  try {
+    const {
+      fullName,
+      email,
+      phone,
+      password,
+      confirmPassword,
+      address,
+      city,
+      bankName,
+      accountNumber,
+      accountHolderName,
+    } = req.body;
+
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: 'Passwords do not match' });
+    }
+
+    // Check if user already exists
+    let user = await User.findOne({ email });
+    if (user) {
+      return res.status(400).json({ message: 'Email already registered' });
+    }
+
+    // Split fullName into firstName and lastName
+    const nameParts = fullName.trim().split(' ');
+    const firstName = nameParts[0];
+    const lastName = nameParts.slice(1).join(' ') || 'Owner';
+
+    // Create owner user
+    user = await User.create({
+      firstName,
+      lastName,
+      email,
+      password,
+      phone,
+      address,
+      city,
+      role: 'owner',
+      bankName,
+      accountNumber,
+      accountHolderName,
+      ownerVerified: false, // Requires admin approval
+    });
+
+    // Create owner profile
+    const owner = await Owner.create({
+      userId: user._id,
+      bankDetails: {
+        bankName,
+        accountHolderName,
+        accountNumber,
+      },
+      verified: false, // Requires admin verification
+    });
+
+    const token = generateToken(user._id, user.role);
+
+    // Send welcome email
+    try {
+      await sendEmail(
+        email,
+        'Welcome to Monstrec Rentals - Vehicle Partner',
+        `
+        <h2>Welcome ${firstName}!</h2>
+        <p>Your owner application has been submitted successfully.</p>
+        <p>Our admin team will review your documents and approve your account within 24-48 hours.</p>
+        <p>You'll receive an email notification once your account is verified.</p>
+        <p>Thank you for joining Monstrec Rentals!</p>
+        `
+      );
+    } catch (emailError) {
+      console.log('Email not sent but owner created:', emailError);
+    }
+
+    res.status(201).json({
+      message: 'Owner registration submitted successfully. Awaiting admin approval.',
+      token,
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        ownerVerified: user.ownerVerified,
+      },
+    });
   } catch (error) {
     next(error);
   }
