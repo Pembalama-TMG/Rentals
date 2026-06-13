@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 import 'dotenv/config';
-import connectDB from './config/database.js';
-import User from './models/User.js';
-import Vehicle from './models/Vehicle.js';
-import Booking from './models/Booking.js';
-import Payment from './models/Payment.js';
-import Settings from './models/Settings.js';
+import connectDB from '../config/database.js';
+import User from '../models/User.js';
+import Vehicle from '../models/Vehicle.js';
+import Booking from '../models/Booking.js';
+import Payment from '../models/Payment.js';
+import Settings from '../models/Settings.js';
 
 const seedData = async () => {
   try {
@@ -82,7 +82,7 @@ const seedData = async () => {
         engineNumber: 'ENG001',
         chassisNumber: 'CHS001',
         description: 'Reliable and fuel-efficient scooter',
-        image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
+        image: 'https://images.unsplash.com/photo-1716574400004-ba794161f8cd?w=1000',
         rating: 4.5,
       },
       {
@@ -100,7 +100,7 @@ const seedData = async () => {
         engineNumber: 'ENG002',
         chassisNumber: 'CHS002',
         description: 'Smooth and reliable commuter bike',
-        image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
+        image: 'https://images.unsplash.com/photo-1684607396581-e037c3a5984d?w=1000',
         rating: 4.7,
       },
       {
@@ -118,7 +118,7 @@ const seedData = async () => {
         engineNumber: 'ENG003',
         chassisNumber: 'CHS003',
         description: 'Sport styled bike with great performance',
-        image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400',
+        image: 'https://images.unsplash.com/photo-1625826425873-af4d9c357c4d?w=1000',
         rating: 4.8,
       },
       {
@@ -136,7 +136,7 @@ const seedData = async () => {
         engineNumber: 'ENG004',
         chassisNumber: 'CHS004',
         description: 'Smooth automatic scooter',
-        image: 'https://images.unsplash.com/photo-1525231560007-0667ffdde9c2?w=400',
+        image: 'https://cdn.bikedekho.com/upload/userfiles/images/67d961645480d.jpg?tr=w-930',
         rating: 4.4,
       },
       {
@@ -154,7 +154,7 @@ const seedData = async () => {
         engineNumber: 'ENG005',
         chassisNumber: 'CHS005',
         description: 'Sporty and fuel-efficient',
-        image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=400',
+        image: 'https://images.unsplash.com/photo-1629616092586-636e3010398a?w=1000',
         rating: 4.6,
       },
       {
@@ -172,7 +172,7 @@ const seedData = async () => {
         engineNumber: 'ENG006',
         chassisNumber: 'CHS006',
         description: 'Budget-friendly and reliable',
-        image: 'https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=400',
+        image: 'https://images.unsplash.com/photo-1630167954300-aec0e9a8624c?w=1000',
         rating: 4.3,
       },
       {
@@ -190,7 +190,7 @@ const seedData = async () => {
         engineNumber: 'ENG007',
         chassisNumber: 'CHS007',
         description: 'Classic and stylish Vespa scooter',
-        image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
+        image: 'https://wlassets.vespa.com/wlassets/vespa/my/s-125/03-hotspot/Artboard-2/original/Artboard+2.png?1756453507925',
         rating: 4.9,
       },
       {
@@ -208,7 +208,7 @@ const seedData = async () => {
         engineNumber: 'ENG008',
         chassisNumber: 'CHS008',
         description: 'Premium retro styling bike, perfect for adventure',
-        image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=400',
+        image: 'https://www.royalenfield.com/content/dam/royal-enfield/nepal/motorcycles/classic-350/home/gma-nepal.jpg',
         rating: 4.9,
       },
       {
@@ -226,7 +226,7 @@ const seedData = async () => {
         engineNumber: 'ENG009',
         chassisNumber: 'CHS009',
         description: 'Spacious and comfortable executive scooter',
-        image: 'https://images.unsplash.com/photo-1525231560007-0667ffdde9c2?w=400',
+        image: 'https://imgcdn.oto.com/large/gallery/exterior/92/2828/suzuki-burgman-street-125-ex-slant-rear-view-full-image-592851.jpg',
         rating: 4.7,
       },
       {
@@ -244,7 +244,7 @@ const seedData = async () => {
         engineNumber: 'ENG010',
         chassisNumber: 'CHS010',
         description: 'Powerful naked street bike with sharp handling',
-        image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400',
+        image: 'https://images.unsplash.com/photo-1610553556003-9b2ae8ef1b8e?w=1000',
         rating: 4.8,
       },
       {
@@ -262,7 +262,7 @@ const seedData = async () => {
         engineNumber: 'ENG011',
         chassisNumber: 'CHS011',
         description: 'Sporty Italian design with modern features',
-        image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
+        image: 'https://images.piaggio.com/aprilia/vehicles/escv000tkb/escvbrctkb/escvbrctkb-01-s.png',
         rating: 4.6,
       },
       {
@@ -280,7 +280,7 @@ const seedData = async () => {
         engineNumber: 'ENG012',
         chassisNumber: 'CHS012',
         description: 'Economical and durable commuter bike',
-        image: 'https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=400',
+        image: 'https://www.heromotocorp.com/content/dam/hero-commerce/in/en/products/practical/splendor-plus/HSPUMDRSCFIBBK/360/1.png',
         rating: 4.4,
       },
       {
@@ -298,69 +298,18 @@ const seedData = async () => {
         engineNumber: 'ENG013',
         chassisNumber: 'CHS013',
         description: 'Premium hybrid scooter with advanced features',
-        image: 'https://images.unsplash.com/photo-1525231560007-0667ffdde9c2?w=400',
+        image: 'https://images.unsplash.com/photo-1628798211398-29d5c9773fbd?w=1000',
         rating: 4.8,
       },
     ]);
     console.log('✓ Vehicles created');
 
-    // Create Bookings
-    const now = new Date();
-    const bookings = await Booking.insertMany([
-      {
-        userId: customers[0]._id,
-        vehicleId: vehicles[0]._id,
-        startDate: new Date(now.getTime() + 24 * 60 * 60 * 1000),
-        endDate: new Date(now.getTime() + 48 * 60 * 60 * 1000),
-        rentalType: 'fullDay',
-        pickupLocation: 'Kathmandu Central',
-        dropoffLocation: 'Thamel',
-        baseCost: 1000,
-        totalCost: 1130,
-        status: 'confirmed',
-        paymentStatus: 'completed',
-        paymentMethod: 'esewa',
-      },
-      {
-        userId: customers[1]._id,
-        vehicleId: vehicles[1]._id,
-        startDate: new Date(now.getTime() + 72 * 60 * 60 * 1000),
-        endDate: new Date(now.getTime() + 96 * 60 * 60 * 1000),
-        rentalType: 'fullDay',
-        pickupLocation: 'Pokhara Lake Side',
-        dropoffLocation: 'Pokhara Airport',
-        baseCost: 1500,
-        totalCost: 1695,
-        status: 'pending',
-        paymentStatus: 'pending',
-        paymentMethod: 'khalti',
-      },
-    ]);
-    console.log('✓ Bookings created');
-
-    // Create Payments
-    await Payment.insertMany([
-      {
-        bookingId: bookings[0]._id,
-        userId: customers[0]._id,
-        amount: 1130,
-        paymentMethod: 'esewa',
-        paymentStatus: 'completed',
-        paymentGatewayResponse: {
-          transactionCode: 'TXN001',
-          statusCode: '0',
-          statusMessage: 'Success',
-        },
-      },
-    ]);
-    console.log('✓ Payments created');
-
     // Create Settings
     await Settings.create({
       companyName: 'Monstrec Rentals',
-      companyEmail: 'info@monstrec.com',
-      companyPhone: '+977-1-4123456',
-      companyAddress: 'Thamel, Kathmandu, Nepal',
+      companyEmail: 'monstrec-rental@gmail.com',
+      companyPhone: '+977-9823423121',
+      companyAddress: 'Boudha, Kathmandu, Nepal',
       scooterPricePerKm: 20,
       scooterDailyRate: 1000,
       bikePricePerKm: 20,

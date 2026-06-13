@@ -12,6 +12,7 @@ import bookingRoutes from './routes/bookingRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
+import partnerVehicleRoutes from './routes/partnerVehicleRoutes.js';
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/partner-vehicles', partnerVehicleRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

@@ -5,7 +5,7 @@ import { FaStar } from 'react-icons/fa';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import OptimizedImage from './OptimizedImage.jsx';
 
-export default function VehicleCard({ vehicle }) {
+export default function VehicleCard({ vehicle, onBookNow }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   // Get images from vehicle - handle both single image and gallery
@@ -131,12 +131,24 @@ export default function VehicleCard({ vehicle }) {
         </div>
 
         {/* CTA */}
-        <Link
-          to={`/vehicle/${vehicle._id}`}
-          className="w-full bg-gradient-to-r from-primary to-accent hover:shadow-lg text-white py-3 rounded-lg transition-all font-semibold text-center block transform hover:scale-105"
-        >
-          View Details
-        </Link>
+        <div className="space-y-2">
+          {onBookNow && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => onBookNow(vehicle)}
+              className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-lg transition-all font-semibold"
+            >
+              Book Now
+            </motion.button>
+          )}
+          <Link
+            to={`/vehicle/${vehicle._id}`}
+            className="w-full bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 hover:shadow-lg text-gray-900 dark:text-white py-3 rounded-lg transition-all font-semibold text-center block transform hover:scale-105"
+          >
+            View Details
+          </Link>
+        </div>
       </div>
     </motion.div>
   );

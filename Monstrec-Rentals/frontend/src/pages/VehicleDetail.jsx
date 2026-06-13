@@ -23,6 +23,15 @@ export default function VehicleDetail() {
   });
   const [totalCost, setTotalCost] = useState(0);
 
+  // Get today's date in YYYY-MM-DD format
+  const getTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   useEffect(() => {
     const fetchVehicle = async () => {
       try {
@@ -175,6 +184,7 @@ export default function VehicleDetail() {
                     type="date"
                     value={booking.startDate}
                     onChange={(e) => setBooking({ ...booking, startDate: e.target.value })}
+                    min={getTodayDate()}
                     className="w-full p-2 border rounded-lg"
                   />
                 </div>
@@ -188,6 +198,7 @@ export default function VehicleDetail() {
                     type="date"
                     value={booking.endDate}
                     onChange={(e) => setBooking({ ...booking, endDate: e.target.value })}
+                    min={booking.startDate || getTodayDate()}
                     className="w-full p-2 border rounded-lg"
                   />
                 </div>

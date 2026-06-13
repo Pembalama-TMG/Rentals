@@ -57,7 +57,12 @@ export const getBookingById = async (req, res, next) => {
 // Create Booking
 export const createBooking = async (req, res, next) => {
   try {
-    const { vehicleId, startDate, endDate, rentalType, distance, pickupLocation, dropoffLocation } = req.body;
+    const { vehicleId, fullName, phone, startDate, endDate, rentalType, distance, pickupLocation, dropoffLocation } = req.body;
+
+    // Validate required fields
+    if (!fullName || !phone) {
+      return res.status(400).json({ message: 'Full name and phone number are required' });
+    }
 
     // Validate vehicle
     const vehicle = await Vehicle.findById(vehicleId);
@@ -97,6 +102,8 @@ export const createBooking = async (req, res, next) => {
     const booking = await Booking.create({
       userId: req.user.id,
       vehicleId,
+      fullName,
+      phone,
       startDate,
       endDate,
       rentalType,

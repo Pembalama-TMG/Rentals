@@ -10,20 +10,26 @@ import {
   Plus,
   Eye,
   CheckCircle,
-  XCircle
+  XCircle,
+  X
 } from 'lucide-react';
 import OptimizedImage from '../components/OptimizedImage.jsx';
 import ImageUpload from '../components/ImageUpload.jsx';
+import { vehicleAPI } from '../services/api.js';
+import toast from 'react-hot-toast';
 
 const OwnerDashboard = ({ tab = 'overview' }) => {
   const [activeTab, setActiveTab] = useState(tab);
   const [vehicleImages, setVehicleImages] = useState({});
+  const [editingVehicle, setEditingVehicle] = useState(null);
+  const [uploadingVehicleId, setUploadingVehicleId] = useState(null);
+  const [newVehicleImages, setNewVehicleImages] = useState([]);
   const [vehicles, setVehicles] = useState([
     {
       id: 1,
-      name: 'Honda Dio',
+      name: 'Honda Activa',
       type: 'Scooter',
-      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
+      image: 'https://images.unsplash.com/photo-1716574400004-ba794161f8cd?w=1000',
       images: [],
       status: 'Available',
       earnings: '₨5,400',
@@ -35,7 +41,7 @@ const OwnerDashboard = ({ tab = 'overview' }) => {
     {
       id: 1,
       customerName: 'Raj Kumar',
-      vehicle: 'Honda Dio',
+      vehicle: 'Honda Activa',
       dates: '2024-06-15 to 2024-06-17',
       status: 'Pending',
       amount: '₨3,000',
@@ -50,6 +56,54 @@ const OwnerDashboard = ({ tab = 'overview' }) => {
     { id: 'reviews', label: 'Reviews', icon: Star },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
+
+  const handleVehicleImagesChange = (vehicleId, images) => {
+    setVehicleImages(prev => ({
+      ...prev,
+      [vehicleId]: images
+    }));
+    setNewVehicleImages(images);
+  };
+
+  const handleEditVehicle = (vehicle) => {
+    setEditingVehicle(vehicle);
+    setUploadingVehicleId(vehicle.id);
+    setNewVehicleImages([]);
+  };
+
+  const handleUpdateVehicleImage = async () => {
+    if (!editingVehicle || newVehicleImages.length === 0) {
+      toast.error('Please select at least one image to upload');
+      return;
+    }
+
+    try {
+      // Create FormData for file upload
+      const formData = new FormData();
+      
+      // Add the first image file from the new images
+      if (newVehicleImages[0]?.file) {
+        formData.append('image', newVehicleImages[0].file);
+      }
+
+      // Update vehicle with new image
+      const response = await vehicleAPI.updateVehicleWithImage(editingVehicle.id, formData);
+      
+      // Update local state with new image
+      setVehicles(prev => prev.map(v => 
+        v.id === editingVehicle.id 
+          ? { ...v, image: response.vehicle.image }
+          : v
+      ));
+
+      toast.success('Vehicle image updated successfully!');
+      setEditingVehicle(null);
+      setUploadingVehicleId(null);
+      setNewVehicleImages([]);
+    } catch (error) {
+      toast.error(error || 'Failed to update vehicle image');
+    }
+  };
 
   const renderOverview = () => (
     <div className="grid md:grid-cols-4 gap-6">
@@ -114,13 +168,6 @@ const OwnerDashboard = ({ tab = 'overview' }) => {
     </div>
   );
 
-  const handleVehicleImagesChange = (vehicleId, images) => {
-    setVehicleImages(prev => ({
-      ...prev,
-      [vehicleId]: images
-    }));
-  };
-
   const renderVehicles = () => (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -134,6 +181,77 @@ const OwnerDashboard = ({ tab = 'overview' }) => {
           Add Vehicle
         </motion.button>
       </div>
+
+      {/* Edit Modal */}
+      {editingVehicle && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          onClick={() => setEditingVehicle(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-gradient-to-r from-primary to-accent p-6 flex items-center justify-between">
+              <h3 className="text-xl font-bold text-white">Update Vehicle Image</h3>
+              <button
+                onClick={() => setEditingVehicle(null)}
+                className="text-white hover:bg-white/20 p-2 rounded-lg transition"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="p-6">
+              <div className="mb-6">
+                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  {editingVehicle.name}
+                </h4>
+                <div className="h-40 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
+                  <OptimizedImage
+                    src={editingVehicle.image}
+                    alt={editingVehicle.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+
+              <ImageUpload
+                onImagesChange={handleVehicleImagesChange}
+                maxImages={1}
+                existingImages={[]}
+                onRemoveImage={() => {}}
+              />
+
+              <div className="flex gap-3 mt-6">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleUpdateVehicleImage}
+                  disabled={newVehicleImages.length === 0}
+                  className="flex-1 bg-gradient-to-r from-primary to-accent text-white font-semibold py-3 rounded-lg hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Update Image
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setEditingVehicle(null)}
+                  className="flex-1 bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-white font-semibold py-3 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition"
+                >
+                  Cancel
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
 
       <div className="space-y-8">
         {vehicles.map((vehicle, index) => (
@@ -183,27 +301,16 @@ const OwnerDashboard = ({ tab = 'overview' }) => {
                     <Eye className="w-4 h-4" />
                     View
                   </button>
-                  <button className="flex-1 bg-primary hover:opacity-90 text-white py-2 rounded-lg transition-opacity">
-                    Edit
-                  </button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleEditVehicle(vehicle)}
+                    className="flex-1 bg-primary hover:opacity-90 text-white py-2 rounded-lg transition-opacity"
+                  >
+                    Edit Image
+                  </motion.button>
                 </div>
               </div>
-            </div>
-
-            {/* Image Upload */}
-            <div className="border-t border-gray-200 dark:border-gray-600 pt-6">
-              <ImageUpload
-                onImagesChange={(images) => handleVehicleImagesChange(vehicle.id, images)}
-                maxImages={10}
-                existingImages={vehicle.images || []}
-                onRemoveImage={(imageUrl) => {
-                  setVehicles(prev => prev.map(v => 
-                    v.id === vehicle.id 
-                      ? { ...v, images: v.images.filter(img => img !== imageUrl) }
-                      : v
-                  ));
-                }}
-              />
             </div>
           </motion.div>
         ))}

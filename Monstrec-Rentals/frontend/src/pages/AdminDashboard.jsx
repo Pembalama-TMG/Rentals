@@ -7,9 +7,11 @@ import {
   FaUsers,
   FaSignOutAlt,
   FaPlus,
+  FaCheck,
+  FaTimes,
 } from 'react-icons/fa';
 import useAuth from '../hooks/useAuth.js';
-import { analyticsAPI, vehicleAPI, bookingAPI, userAPI } from '../services/api.js';
+import { analyticsAPI, vehicleAPI, bookingAPI, userAPI, partnerVehicleAPI } from '../services/api.js';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import toast from 'react-hot-toast';
 
@@ -21,6 +23,9 @@ export default function AdminDashboard({ tab = 'dashboard' }) {
   const [vehicles, setVehicles] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [users, setUsers] = useState([]);
+  const [partnerVehicles, setPartnerVehicles] = useState([]);
+  const [rejectReasons, setRejectReasons] = useState({});
+  const [showRejectForm, setShowRejectForm] = useState(null);
 
   useEffect(() => {
     loadDashboardData();
@@ -41,11 +46,42 @@ export default function AdminDashboard({ tab = 'dashboard' }) {
       } else if (activeTab === 'customers') {
         const data = await userAPI.getAllUsers({ role: 'customer' });
         setUsers(data.users);
+      } else if (activeTab === 'partner-vehicles') {
+        const data = await partnerVehicleAPI.getPendingVehicles();
+        setPartnerVehicles(data.vehicles);
       }
     } catch (error) {
       toast.error('Failed to load data');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleApproveVehicle = async (vehicleId) => {
+    try {
+      await partnerVehicleAPI.approveVehicle(vehicleId, {});
+      toast.success('Vehicle approved successfully!');
+      loadDashboardData();
+    } catch (error) {
+      toast.error('Failed to approve vehicle');
+    }
+  };
+
+  const handleRejectVehicle = async (vehicleId) => {
+    const reason = rejectReasons[vehicleId];
+    if (!reason.trim()) {
+      toast.error('Please provide a rejection reason');
+      return;
+    }
+
+    try {
+      await partnerVehicleAPI.rejectVehicle(vehicleId, { rejectionReason: reason });
+      toast.success('Vehicle rejected successfully!');
+      setRejectReasons(prev => ({ ...prev, [vehicleId]: '' }));
+      setShowRejectForm(null);
+      loadDashboardData();
+    } catch (error) {
+      toast.error('Failed to reject vehicle');
     }
   };
 
@@ -64,7 +100,8 @@ export default function AdminDashboard({ tab = 'dashboard' }) {
               <nav className="space-y-2">
                 {[
                   { id: 'dashboard', label: 'Analytics', icon: <FaChartBar /> },
-                  { id: 'vehicles', label: 'Vehicles', icon: <FaMotorcycle /> },
+                  { id: 'partner-vehicles', label: 'Partner Requests', icon: <FaMotorcycle /> },
+                  { id: 'vehicles', label: 'All Vehicles', icon: <FaMotorcycle /> },
                   { id: 'bookings', label: 'Bookings', icon: <FaClipboardList /> },
                   { id: 'customers', label: 'Customers', icon: <FaUsers /> },
                 ].map((item) => (
@@ -243,6 +280,100 @@ export default function AdminDashboard({ tab = 'dashboard' }) {
                   </div>
                 ) : (
                   <p>No customers found.</p>
+                )}
+              </div>
+            )}
+
+            {/* Partner Vehicles - Pending Approval */}
+            {activeTab === 'partner-vehicles' && (
+              <div className="space-y-6">
+                <h2 className="text-3xl font-bold">Partner Vehicle Requests</h2>
+                {loading ? (
+                  <p>Loading...</p>
+                ) : partnerVehicles.length > 0 ? (
+                  <div className="space-y-4">
+                    {partnerVehicles.map((vehicle) => (
+                      <motion.div
+                        key={vehicle._id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-white rounded-2xl shadow-lg overflow-hidden"
+                      >
+                        <div className="grid md:grid-cols-4 gap-6 p-6">
+                          {/* Image */}
+                          <div className="md:col-span-1">
+                            <img
+                              src={vehicle.vehicleImage || 'https://via.placeholder.com/300x200'}
+                              alt={vehicle.vehicleName}
+                              className="w-full h-48 object-cover rounded-lg"
+                            />
+                          </div>
+
+                          {/* Details */}
+                          <div className="md:col-span-2">
+                            <h3 className="text-2xl font-bold mb-3">{vehicle.vehicleName}</h3>
+                            <div className="space-y-2 text-sm">
+                              <p><strong>Type:</strong> {vehicle.vehicleType}</p>
+                              <p><strong>Partner:</strong> {vehicle.partnerFullName}</p>
+                              <p><strong>Phone:</strong> {vehicle.partnerPhone}</p>
+                              <p><strong>Email:</strong> {vehicle.partnerEmail}</p>
+                              <p><strong>Location:</strong> {vehicle.exactLocation}, {vehicle.city}</p>
+                              <p><strong>Daily Rate:</strong> ₨{vehicle.dailyRentPrice}</p>
+                              <p className="pt-2"><strong>Description:</strong> {vehicle.vehicleDescription}</p>
+                            </div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="md:col-span-1">
+                            <div className="space-y-3">
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => handleApproveVehicle(vehicle._id)}
+                                className="w-full flex items-center justify-center gap-2 bg-green-500 text-white px-4 py-3 rounded-lg hover:bg-green-600 transition"
+                              >
+                                <FaCheck /> Approve
+                              </motion.button>
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => setShowRejectForm(showRejectForm === vehicle._id ? null : vehicle._id)}
+                                className="w-full flex items-center justify-center gap-2 bg-red-500 text-white px-4 py-3 rounded-lg hover:bg-red-600 transition"
+                              >
+                                <FaTimes /> Reject
+                              </motion.button>
+
+                              {/* Reject Form */}
+                              {showRejectForm === vehicle._id && (
+                                <div className="mt-4 p-4 bg-red-50 rounded-lg border border-red-200">
+                                  <textarea
+                                    value={rejectReasons[vehicle._id] || ''}
+                                    onChange={(e) => setRejectReasons(prev => ({
+                                      ...prev,
+                                      [vehicle._id]: e.target.value
+                                    }))}
+                                    placeholder="Enter rejection reason..."
+                                    className="w-full p-2 border border-red-300 rounded-lg text-sm mb-3"
+                                    rows="3"
+                                  />
+                                  <button
+                                    onClick={() => handleRejectVehicle(vehicle._id)}
+                                    className="w-full bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 text-sm"
+                                  >
+                                    Confirm Rejection
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+                    <p className="text-gray-500 text-lg">No pending vehicle requests</p>
+                  </div>
                 )}
               </div>
             )}

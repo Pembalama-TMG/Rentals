@@ -19,11 +19,23 @@ A modern, responsive, and fully functional MERN stack application for managing s
 - [Default Credentials](#default-credentials)
 - [Contributing](#contributing)
 
+## 🚀 **NEW FEATURES - IMPLEMENTATION GUIDE**
+
+For detailed information about the latest features including:
+- ✨ Fully Functional Booking System with Modal
+- ✨ Enhanced Partner Registration Form
+- ✨ Admin Vehicle Approval Workflow
+- ✨ Modern Toast Notifications
+- ✨ Updated Image URLs
+
+**👉 See [IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md) for complete details and testing instructions!**
+
 ## ✨ Features
 
 ### Customer Features
 - ✅ User authentication (Register/Login)
 - ✅ Browse scooters and bikes with filters
+- ✅ **Instant booking from vehicle cards with "Book Now" modal**
 - ✅ Detailed vehicle information with images
 - ✅ Book vehicles for per-km or full-day rental
 - ✅ Automatic cost calculation with taxes
@@ -32,8 +44,19 @@ A modern, responsive, and fully functional MERN stack application for managing s
 - ✅ Profile management
 - ✅ Responsive design
 
+### Partner/Owner Features
+- ✅ **Enhanced partner registration with vehicle submission form**
+- ✅ Submit vehicles for admin approval
+- ✅ Upload vehicle images (JPG/JPEG only)
+- ✅ Set daily rental prices
+- ✅ Specify vehicle locations
+- ✅ View submission status
+- ✅ Receive approval/rejection notifications
+
 ### Admin Features
 - ✅ Dashboard with analytics
+- ✅ **Partner vehicle approval/rejection workflow**
+- ✅ **Review pending vehicle submissions**
 - ✅ Vehicle management (CRUD)
 - ✅ Booking management (approve/reject/complete)
 - ✅ Customer management
@@ -48,6 +71,9 @@ A modern, responsive, and fully functional MERN stack application for managing s
 - ✅ MongoDB database
 - ✅ Modern UI with Tailwind CSS
 - ✅ Smooth animations with Framer Motion
+- ✅ **Modern toast notifications**
+- ✅ **Form validation with error messages**
+- ✅ **Responsive booking system**
 - ✅ Toast notifications
 - ✅ Mobile responsive
 - ✅ Dark mode compatible

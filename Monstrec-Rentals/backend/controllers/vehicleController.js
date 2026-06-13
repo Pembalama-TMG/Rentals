@@ -120,20 +120,22 @@ export const updateVehicle = async (req, res, next) => {
       }
     }
 
+    // Build update object with only provided fields
+    const updateData = { image: imageUrl };
+    
+    if (name !== undefined) updateData.name = name;
+    if (brand !== undefined) updateData.brand = brand;
+    if (type !== undefined) updateData.type = type;
+    if (model !== undefined) updateData.model = model;
+    if (year !== undefined) updateData.year = year;
+    if (pricePerKm !== undefined) updateData.pricePerKm = pricePerKm;
+    if (dailyRate !== undefined) updateData.dailyRate = dailyRate;
+    if (description !== undefined) updateData.description = description;
+    if (availability !== undefined) updateData.availability = availability;
+
     vehicle = await Vehicle.findByIdAndUpdate(
       req.params.id,
-      {
-        name,
-        brand,
-        type,
-        model,
-        year,
-        pricePerKm: pricePerKm || vehicle.pricePerKm,
-        dailyRate,
-        description,
-        availability: availability !== undefined ? availability : vehicle.availability,
-        image: imageUrl,
-      },
+      updateData,
       { new: true, runValidators: true }
     );
 

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { FaStar, FaArrowRight } from 'react-icons/fa';
 import { MapPin } from 'lucide-react';
 import VehicleCard from '../components/VehicleCard.jsx';
+import BookingModal from '../components/BookingModal.jsx';
 import OptimizedImage from '../components/OptimizedImage.jsx';
 import useVehicles from '../hooks/useVehicles.js';
 import LoadingSkeleton from '../components/LoadingSkeleton.jsx';
@@ -16,14 +17,23 @@ export default function Home() {
   const heroRef = useRef(null);
   const { scrollY } = useScroll();
   const yOffset = useTransform(scrollY, [0, 500], [0, 150]);
+  
+  // Booking Modal state
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
+
+  const handleBookNow = (vehicle) => {
+    setSelectedVehicle(vehicle);
+    setBookingModalOpen(true);
+  };
 
   const destinations = [
-    { name: 'Kathmandu', image: 'https://images.unsplash.com/photo-1597139471983-db8bf2a4dc2f?w=500', cost: '₨500/day', routes: '15 Popular Routes' },
-    { name: 'Pokhara', image: 'https://images.unsplash.com/photo-1537225228614-b4fad34a2b08?w=500', cost: '₨400/day', routes: '12 Popular Routes' },
-    { name: 'Chitwan', image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=500', cost: '₨450/day', routes: '10 Popular Routes' },
-    { name: 'Lumbini', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500', cost: '₨350/day', routes: '8 Popular Routes' },
-    { name: 'Mustang', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500', cost: '₨600/day', routes: '6 Popular Routes' },
-    { name: 'Butwal', image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=500', cost: '₨380/day', routes: '9 Popular Routes' },
+    { name: 'Kathmandu', image: 'https://peakvisor.com/photo/HD/Kathmandu-distant-view-nyatapola-temple-taumadhi-square-1559765687.jpg', cost: '₨500/day', routes: '15 Popular Routes' },
+    { name: 'Pokhara', image: 'https://www.acethehimalaya.com/wp-content/uploads/2024/02/things-to-do-in-pokhara.jpg', cost: '₨400/day', routes: '12 Popular Routes' },
+    { name: 'Chitwan', image: 'https://www.thirdrockadventures.com/assets-back/images/blog/chitwan-national-park.jpgnB3.jpg', cost: '₨450/day', routes: '10 Popular Routes' },
+    { name: 'Lumbini', image: 'https://dynamic-media.tacdn.com/media/photo-o/2e/f6/3d/a6/caption.jpg?w=1400&h=1000&s=1', cost: '₨350/day', routes: '8 Popular Routes' },
+    { name: 'Mustang', image: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0c/5d/17/bd/muktinath-temple.jpg?w=600&h=500&s=1', cost: '₨600/day', routes: '6 Popular Routes' },
+    { name: 'Butwal', image: 'https://risingnepaldaily.com/storage/media/26250/118582708_4262380870503511_7191211685942392003_n.jpg', cost: '₨380/day', routes: '9 Popular Routes' },
   ];
 
   const testimonials = [
@@ -46,7 +56,7 @@ export default function Home() {
         >
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/60" />
           <OptimizedImage
-            src={DEFAULT_IMAGES.heroScooter}
+            src="https://larentalsmalta.com/wp-content/uploads/2023/11/Untitled-design-2.jpg"
             alt="Hero Background"
             className="w-full h-full"
             objectFit="cover"
@@ -142,7 +152,7 @@ export default function Home() {
                 desc: 'Book in just 5 minutes, no hassle' 
               },
               { 
-                image: DEFAULT_IMAGES.securePayment, 
+                image: 'https://static.vecteezy.com/system/resources/thumbnails/029/899/733/small_2x/secure-payment-credit-card-icon-with-shield-secure-transaction-stock-illustration-vector.jpg', 
                 title: 'Secure Payments', 
                 desc: 'Safe online transactions with encryption' 
               },
@@ -227,9 +237,12 @@ export default function Home() {
                         <MapPin size={16} /> {dest.routes}
                       </p>
                     </div>
-                    <button className="bg-primary hover:bg-accent px-4 py-2 rounded-lg font-semibold transition-colors">
+                    <Link
+                      to="/vehicles"
+                      className="bg-primary hover:bg-accent px-4 py-2 rounded-lg font-semibold transition-colors"
+                    >
                       Book
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </motion.div>
@@ -371,6 +384,19 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      {/* Booking Modal */}
+      {selectedVehicle && (
+        <BookingModal
+          isOpen={bookingModalOpen}
+          onClose={() => {
+            setBookingModalOpen(false);
+            setSelectedVehicle(null);
+          }}
+          vehicle={selectedVehicle}
+          locations={['Kathmandu', 'Pokhara', 'Chitwan', 'Lumbini', 'Mustang', 'Butwal']}
+        />
+      )}
     </div>
   );
 }

@@ -17,6 +17,15 @@ const bookingSchema = new mongoose.Schema(
       ref: 'Vehicle',
       required: true,
     },
+    // Booking Form Information
+    fullName: {
+      type: String,
+      required: [true, 'Full name is required'],
+    },
+    phone: {
+      type: String,
+      required: [true, 'Phone number is required'],
+    },
     startDate: {
       type: Date,
       required: true,

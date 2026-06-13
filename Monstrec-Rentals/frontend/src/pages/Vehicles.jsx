@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import VehicleCard from '../components/VehicleCard.jsx';
+import BookingModal from '../components/BookingModal.jsx';
 import useVehicles from '../hooks/useVehicles.js';
 import LoadingSkeleton from '../components/LoadingSkeleton.jsx';
 import { FaSearch } from 'react-icons/fa';
@@ -18,6 +19,15 @@ export default function Vehicles() {
     searchTerm: ''
   });
   const [showAdvanced, setShowAdvanced] = useState(false);
+  
+  // Booking Modal state
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
+
+  const handleBookNow = (vehicle) => {
+    setSelectedVehicle(vehicle);
+    setBookingModalOpen(true);
+  };
 
   const handleFilterChange = (key, value) => {
     const newFilters = { ...filters, [key]: value };
@@ -246,7 +256,7 @@ export default function Vehicles() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
                   >
-                    <VehicleCard vehicle={vehicle} />
+                    <VehicleCard vehicle={vehicle} onBookNow={handleBookNow} />
                   </motion.div>
                 ))}
               </motion.div>
@@ -275,6 +285,19 @@ export default function Vehicles() {
           </div>
         </div>
       </div>
+
+      {/* Booking Modal */}
+      {selectedVehicle && (
+        <BookingModal
+          isOpen={bookingModalOpen}
+          onClose={() => {
+            setBookingModalOpen(false);
+            setSelectedVehicle(null);
+          }}
+          vehicle={selectedVehicle}
+          locations={['Kathmandu', 'Pokhara', 'Chitwan', 'Lumbini', 'Mustang', 'Butwal']}
+        />
+      )}
     </div>
   );
 }

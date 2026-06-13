@@ -9,7 +9,7 @@ const vehicleSchema = new mongoose.Schema(
     },
     brand: {
       type: String,
-      enum: ['Honda', 'Yamaha', 'TVS', 'Hero', 'Suzuki', 'Bajaj', 'Royal Enfield'],
+      enum: ['Honda', 'Yamaha', 'TVS', 'Hero', 'Suzuki', 'Bajaj', 'Royal Enfield', 'KTM', 'Piaggio', 'Aprilia'],
       required: true,
     },
     type: {

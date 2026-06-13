@@ -15,6 +15,7 @@ export const vehicleAPI = {
   getVehicleById: (id) => apiClient.get(`/vehicles/${id}`),
   createVehicle: (data) => apiClient.post('/vehicles', data),
   updateVehicle: (id, data) => apiClient.put(`/vehicles/${id}`, data),
+  updateVehicleWithImage: (id, formData) => apiClient.put(`/vehicles/${id}`, formData),
   deleteVehicle: (id) => apiClient.delete(`/vehicles/${id}`),
   getVehicleStats: () => apiClient.get('/vehicles/stats'),
 };
@@ -27,6 +28,20 @@ export const bookingAPI = {
   updateBookingStatus: (id, data) => apiClient.put(`/bookings/${id}/status`, data),
   cancelBooking: (id, data) => apiClient.put(`/bookings/${id}/cancel`, data),
   completeBooking: (id) => apiClient.put(`/bookings/${id}/complete`, {}),
+};
+
+// Partner Vehicle services
+export const partnerVehicleAPI = {
+  getAllPartnerVehicles: (params) => apiClient.get('/partner-vehicles', { params }),
+  getPartnerVehicleById: (id) => apiClient.get(`/partner-vehicles/${id}`),
+  createPartnerVehicle: (data) => apiClient.post('/partner-vehicles', data),
+  updatePartnerVehicle: (id, data) => apiClient.put(`/partner-vehicles/${id}`, data),
+  deletePartnerVehicle: (id) => apiClient.delete(`/partner-vehicles/${id}`),
+  getMyVehicles: (params) => apiClient.get('/partner-vehicles/my-vehicles', { params }),
+  getPendingVehicles: (params) => apiClient.get('/partner-vehicles/pending', { params }),
+  getApprovedVehicles: (params) => apiClient.get('/partner-vehicles/approved', { params }),
+  approveVehicle: (id, data) => apiClient.patch(`/partner-vehicles/${id}/approve`, data),
+  rejectVehicle: (id, data) => apiClient.patch(`/partner-vehicles/${id}/reject`, data),
 };
 
 // Payment services
