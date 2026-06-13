@@ -9,6 +9,8 @@ import {
   FaPlus,
   FaCheck,
   FaTimes,
+  FaEdit,
+  FaTrash,
 } from 'react-icons/fa';
 import useAuth from '../hooks/useAuth.js';
 import { analyticsAPI, vehicleAPI, bookingAPI, userAPI, partnerVehicleAPI } from '../services/api.js';
@@ -26,6 +28,22 @@ export default function AdminDashboard({ tab = 'dashboard' }) {
   const [partnerVehicles, setPartnerVehicles] = useState([]);
   const [rejectReasons, setRejectReasons] = useState({});
   const [showRejectForm, setShowRejectForm] = useState(null);
+  const [showAddVehicleModal, setShowAddVehicleModal] = useState(false);
+  const [vehicleFormData, setVehicleFormData] = useState({
+    name: '',
+    brand: '',
+    type: 'scooter',
+    model: '',
+    year: new Date().getFullYear(),
+    pricePerKm: 20,
+    dailyRate: 1000,
+    description: '',
+    licensePlate: '',
+    registrationNumber: '',
+    engineNumber: '',
+    chassisNumber: '',
+  });
+  const [vehicleFormErrors, setVehicleFormErrors] = useState({});
 
   useEffect(() => {
     loadDashboardData();
@@ -82,6 +100,71 @@ export default function AdminDashboard({ tab = 'dashboard' }) {
       loadDashboardData();
     } catch (error) {
       toast.error('Failed to reject vehicle');
+    }
+  };
+
+  const handleAddVehicleChange = (e) => {
+    const { name, value } = e.target;
+    setVehicleFormData(prev => ({
+      ...prev,
+      [name]: name === 'year' || name === 'pricePerKm' || name === 'dailyRate' ? parseInt(value) : value
+    }));
+  };
+
+  const validateVehicleForm = () => {
+    const errors = {};
+    if (!vehicleFormData.name.trim()) errors.name = 'Vehicle name is required';
+    if (!vehicleFormData.brand.trim()) errors.brand = 'Brand is required';
+    if (!vehicleFormData.model.trim()) errors.model = 'Model is required';
+    if (!vehicleFormData.dailyRate || vehicleFormData.dailyRate <= 0) errors.dailyRate = 'Daily rate must be greater than 0';
+    if (!vehicleFormData.licensePlate.trim()) errors.licensePlate = 'License plate is required';
+    if (!vehicleFormData.registrationNumber.trim()) errors.registrationNumber = 'Registration number is required';
+
+    setVehicleFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleCreateVehicle = async (e) => {
+    e.preventDefault();
+    if (!validateVehicleForm()) return;
+
+    try {
+      setLoading(true);
+      await vehicleAPI.createVehicle(vehicleFormData);
+      toast.success('Vehicle created successfully!');
+      setShowAddVehicleModal(false);
+      setVehicleFormData({
+        name: '',
+        brand: '',
+        type: 'scooter',
+        model: '',
+        year: new Date().getFullYear(),
+        pricePerKm: 20,
+        dailyRate: 1000,
+        description: '',
+        licensePlate: '',
+        registrationNumber: '',
+        engineNumber: '',
+        chassisNumber: '',
+      });
+      loadDashboardData();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to create vehicle');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleToggleAvailability = async (vehicleId, currentStatus) => {
+    try {
+      setLoading(true);
+      await vehicleAPI.updateVehicle(vehicleId, { availability: !currentStatus });
+      toast.success(`Vehicle marked as ${!currentStatus ? 'Available' : 'Unavailable'}`);
+      loadDashboardData();
+    } catch (error) {
+      toast.error('Failed to update vehicle status');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -176,46 +259,278 @@ export default function AdminDashboard({ tab = 'dashboard' }) {
 
             {/* Vehicles */}
             {activeTab === 'vehicles' && (
-              <div className="bg-white rounded-2xl shadow-lg p-8">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-3xl font-bold">Vehicles</h2>
-                  <button className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2">
-                    <FaPlus /> Add Vehicle
-                  </button>
-                </div>
-                {loading ? (
-                  <p>Loading...</p>
-                ) : vehicles.length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left py-3">Name</th>
-                          <th className="text-left py-3">Type</th>
-                          <th className="text-left py-3">Daily Rate</th>
-                          <th className="text-left py-3">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {vehicles.map((vehicle) => (
-                          <tr key={vehicle._id} className="border-b hover:bg-light">
-                            <td className="py-3">{vehicle.name}</td>
-                            <td>{vehicle.type}</td>
-                            <td>NPR {vehicle.dailyRate}</td>
-                            <td>
-                              <span className={`px-3 py-1 rounded-full text-sm ${
-                                vehicle.availability ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                              }`}>
-                                {vehicle.availability ? 'Available' : 'Unavailable'}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+              <div className="space-y-6">
+                <div className="bg-white rounded-2xl shadow-lg p-8">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-3xl font-bold">All Vehicles</h2>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setShowAddVehicleModal(true)}
+                      className="bg-primary text-white px-6 py-3 rounded-lg flex items-center gap-2 hover:bg-primary/90 transition"
+                    >
+                      <FaPlus /> Add Vehicle
+                    </motion.button>
                   </div>
-                ) : (
-                  <p>No vehicles found.</p>
+
+                  {loading ? (
+                    <p>Loading...</p>
+                  ) : vehicles.length > 0 ? (
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b">
+                            <th className="text-left py-3">Name</th>
+                            <th className="text-left py-3">Brand</th>
+                            <th className="text-left py-3">Type</th>
+                            <th className="text-left py-3">Daily Rate</th>
+                            <th className="text-left py-3">Status</th>
+                            <th className="text-left py-3">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {vehicles.map((vehicle) => (
+                            <tr key={vehicle._id} className="border-b hover:bg-gray-50">
+                              <td className="py-3">{vehicle.name}</td>
+                              <td>{vehicle.brand}</td>
+                              <td className="capitalize">{vehicle.type}</td>
+                              <td>NPR {vehicle.dailyRate}</td>
+                              <td>
+                                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                                  vehicle.availability 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : 'bg-red-100 text-red-800'
+                                }`}>
+                                  {vehicle.availability ? 'Available' : 'Unavailable'}
+                                </span>
+                              </td>
+                              <td>
+                                <div className="flex gap-2">
+                                  <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => handleToggleAvailability(vehicle._id, vehicle.availability)}
+                                    className={`px-3 py-1 rounded text-white text-sm transition ${
+                                      vehicle.availability 
+                                        ? 'bg-red-500 hover:bg-red-600' 
+                                        : 'bg-green-500 hover:bg-green-600'
+                                    }`}
+                                  >
+                                    {vehicle.availability ? 'Disable' : 'Enable'}
+                                  </motion.button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <p className="text-center text-gray-500">No vehicles found.</p>
+                  )}
+                </div>
+
+                {/* Add Vehicle Modal */}
+                {showAddVehicleModal && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+                  >
+                    <motion.div
+                      initial={{ scale: 0.95, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+                    >
+                      <div className="sticky top-0 bg-gradient-to-r from-primary to-accent p-6 text-white flex justify-between items-center">
+                        <h3 className="text-2xl font-bold">Add New Vehicle</h3>
+                        <button
+                          onClick={() => setShowAddVehicleModal(false)}
+                          className="text-xl hover:scale-110 transition"
+                        >
+                          ✕
+                        </button>
+                      </div>
+
+                      <form onSubmit={handleCreateVehicle} className="p-6 space-y-4">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-semibold mb-1">Vehicle Name *</label>
+                            <input
+                              type="text"
+                              name="name"
+                              value={vehicleFormData.name}
+                              onChange={handleAddVehicleChange}
+                              placeholder="e.g., Honda CB Shine"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                            {vehicleFormErrors.name && <p className="text-red-500 text-sm">{vehicleFormErrors.name}</p>}
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-semibold mb-1">Brand *</label>
+                            <input
+                              type="text"
+                              name="brand"
+                              value={vehicleFormData.brand}
+                              onChange={handleAddVehicleChange}
+                              placeholder="e.g., Honda"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                            {vehicleFormErrors.brand && <p className="text-red-500 text-sm">{vehicleFormErrors.brand}</p>}
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-semibold mb-1">Type *</label>
+                            <select
+                              name="type"
+                              value={vehicleFormData.type}
+                              onChange={handleAddVehicleChange}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            >
+                              <option value="scooter">Scooter</option>
+                              <option value="bike">Bike</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-semibold mb-1">Model *</label>
+                            <input
+                              type="text"
+                              name="model"
+                              value={vehicleFormData.model}
+                              onChange={handleAddVehicleChange}
+                              placeholder="e.g., CB Shine 125"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                            {vehicleFormErrors.model && <p className="text-red-500 text-sm">{vehicleFormErrors.model}</p>}
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-semibold mb-1">Year</label>
+                            <input
+                              type="number"
+                              name="year"
+                              value={vehicleFormData.year}
+                              onChange={handleAddVehicleChange}
+                              min="2000"
+                              max={new Date().getFullYear()}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-semibold mb-1">Daily Rate (NPR) *</label>
+                            <input
+                              type="number"
+                              name="dailyRate"
+                              value={vehicleFormData.dailyRate}
+                              onChange={handleAddVehicleChange}
+                              min="0"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                            {vehicleFormErrors.dailyRate && <p className="text-red-500 text-sm">{vehicleFormErrors.dailyRate}</p>}
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-semibold mb-1">Price Per KM (NPR)</label>
+                            <input
+                              type="number"
+                              name="pricePerKm"
+                              value={vehicleFormData.pricePerKm}
+                              onChange={handleAddVehicleChange}
+                              min="0"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-semibold mb-1">License Plate *</label>
+                            <input
+                              type="text"
+                              name="licensePlate"
+                              value={vehicleFormData.licensePlate}
+                              onChange={handleAddVehicleChange}
+                              placeholder="e.g., BA 01 AA 0001"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                            {vehicleFormErrors.licensePlate && <p className="text-red-500 text-sm">{vehicleFormErrors.licensePlate}</p>}
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-semibold mb-1">Registration Number *</label>
+                            <input
+                              type="text"
+                              name="registrationNumber"
+                              value={vehicleFormData.registrationNumber}
+                              onChange={handleAddVehicleChange}
+                              placeholder="e.g., REG001"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                            {vehicleFormErrors.registrationNumber && <p className="text-red-500 text-sm">{vehicleFormErrors.registrationNumber}</p>}
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-semibold mb-1">Engine Number</label>
+                            <input
+                              type="text"
+                              name="engineNumber"
+                              value={vehicleFormData.engineNumber}
+                              onChange={handleAddVehicleChange}
+                              placeholder="Engine number"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-semibold mb-1">Chassis Number</label>
+                            <input
+                              type="text"
+                              name="chassisNumber"
+                              value={vehicleFormData.chassisNumber}
+                              onChange={handleAddVehicleChange}
+                              placeholder="Chassis number"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                          </div>
+
+                          <div className="md:col-span-2">
+                            <label className="block text-sm font-semibold mb-1">Description</label>
+                            <textarea
+                              name="description"
+                              value={vehicleFormData.description}
+                              onChange={handleAddVehicleChange}
+                              placeholder="Vehicle description"
+                              rows="3"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex gap-3 pt-4">
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            type="button"
+                            onClick={() => setShowAddVehicleModal(false)}
+                            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                          >
+                            Cancel
+                          </motion.button>
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            type="submit"
+                            disabled={loading}
+                            className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition disabled:opacity-50"
+                          >
+                            {loading ? 'Adding...' : 'Add Vehicle'}
+                          </motion.button>
+                        </div>
+                      </form>
+                    </motion.div>
+                  </motion.div>
                 )}
               </div>
             )}
