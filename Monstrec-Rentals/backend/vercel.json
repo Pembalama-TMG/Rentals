@@ -13,16 +13,36 @@
     }
   ],
   "env": {
-    "MONGO_URI": "@mongo_uri",
-    "JWT_SECRET": "@jwt_secret",
-    "EMAIL_HOST": "@email_host",
-    "EMAIL_PORT": "@email_port",
-    "EMAIL_USER": "@email_user",
-    "EMAIL_PASSWORD": "@email_password",
-    "CLOUDINARY_NAME": "@cloudinary_name",
-    "CLOUDINARY_API_KEY": "@cloudinary_api_key",
-    "CLOUDINARY_API_SECRET": "@cloudinary_api_secret",
-    "FRONTEND_URL": "@frontend_url",
+    "MONGO_URI": {
+      "required": true
+    },
+    "JWT_SECRET": {
+      "required": true
+    },
+    "EMAIL_HOST": {
+      "required": true
+    },
+    "EMAIL_PORT": {
+      "required": true
+    },
+    "EMAIL_USER": {
+      "required": true
+    },
+    "EMAIL_PASSWORD": {
+      "required": true
+    },
+    "CLOUDINARY_NAME": {
+      "required": true
+    },
+    "CLOUDINARY_API_KEY": {
+      "required": true
+    },
+    "CLOUDINARY_API_SECRET": {
+      "required": true
+    },
+    "FRONTEND_URL": {
+      "required": true
+    },
     "NODE_ENV": "production"
   }
 }
