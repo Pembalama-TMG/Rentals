@@ -11,38 +11,5 @@
       "src": "/(.*)",
       "dest": "server.js"
     }
-  ],
-  "env": {
-    "MONGO_URI": {
-      "required": true
-    },
-    "JWT_SECRET": {
-      "required": true
-    },
-    "EMAIL_HOST": {
-      "required": true
-    },
-    "EMAIL_PORT": {
-      "required": true
-    },
-    "EMAIL_USER": {
-      "required": true
-    },
-    "EMAIL_PASSWORD": {
-      "required": true
-    },
-    "CLOUDINARY_NAME": {
-      "required": true
-    },
-    "CLOUDINARY_API_KEY": {
-      "required": true
-    },
-    "CLOUDINARY_API_SECRET": {
-      "required": true
-    },
-    "FRONTEND_URL": {
-      "required": true
-    },
-    "NODE_ENV": "production"
-  }
+  ]
 }
